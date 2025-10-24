@@ -1,0 +1,42 @@
+﻿nombre,población,superficie,continente,onu
+Antigua y Barbuda,97929,442,América,true
+Argentina,45376763,2780400,América,true
+Bahamas,393244,13880,América,true
+Barbados,287375,430,América,true
+Belice,397628,22966,América,true
+Bolivia,11673021,1098581,América,true
+Brasil,213993437,8515767,América,true
+Canadá,37742154,9984670,true,América
+Chile,19116201,756102,América,true
+Colombia,50882891,1141748,América,true
+Costa Rica,5094118,51100,América,true
+Cuba,11326616,109884,América,true
+Dominica,71986,751,América,true
+Ecuador,17643054,276841,América,true
+El Salvador,6486201,21041,América,true
+Estados Unidos,331002651,9833517,América,true
+Granada,112523,344,América,true
+Guatemala,17915568,108889,América,true
+Guyana,786552,214969,América,true
+Haití,11402528,27750,América,true
+Honduras,9904607,112492,América,true
+Jamaica,2961167,10991,América,true
+México,128932753,1964375,América,true
+Nicaragua,6624554,130373,América,true
+Panamá,4314767,75417,América,true
+Paraguay,7132538,406752,América,true
+Perú,32971854,1285216,América,true
+República Dominicana,10847910,48671,América,true
+San Cristóbal y Nieves,53199,261,América,true
+San Vicente y las Granadinas,110940,389,América,true
+Santa Lucía,183627,616,América,true
+Surinam,586632,163820,América,true
+Trinidad y Tobago,1399488,5130,América,true
+Uruguay,3473730,176215,América,true
+Venezuela,28435940,916445,América,true
+Groenlandia,56770,2166086,América,false
+Puerto Rico,3193694,9104,América,false
+Curazao,158665,444,América,false
+Aruba,106766,180,América,false
+Bermudas,63918,53,América,false
+Islas Caimán,65757,264,América,false
