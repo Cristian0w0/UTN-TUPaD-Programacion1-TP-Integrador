@@ -24,19 +24,16 @@ def scrap_continente(continente):
 #for continente in CONTINENTES:
 #    scrap_continente(continente)
 
-import configparser
+def scrap(configuracion):
 
-configuracion = configparser.ConfigParser()
-configuracion.read('configuracion.ini')
-path_paises_sin_cargar = configuracion["Paises"]["Paises_Sin_Cargar"]
-path_africa = configuracion["Continentes"]["Africa"]
-path_asia = configuracion["Continentes"]["Asia"]
-path_europa = configuracion["Continentes"]["Europa"]
-path_america = configuracion["Continentes"]["America"]
-path_oceania = configuracion["Continentes"]["Oceania"]
-codificacion = configuracion["Configuracion"]["codificacion"]
+    path_paises_sin_cargar = configuracion["Paises"]["Paises_Sin_Cargar"]
+    path_africa = configuracion["Continentes"]["Africa"]
+    path_asia = configuracion["Continentes"]["Asia"]
+    path_europa = configuracion["Continentes"]["Europa"]
+    path_america = configuracion["Continentes"]["America"]
+    path_oceania = configuracion["Continentes"]["Oceania"]
+    codificacion = configuracion["Configuracion"]["codificacion"]
 
-def scrap():
     with open(path_paises_sin_cargar, "r", encoding=codificacion, newline="") as paises_archivo, \
     open(path_africa, "w", encoding=codificacion, newline="") as africa_archivo, \
     open(path_asia, "w", encoding=codificacion, newline="") as asia_archivo, \

@@ -1,6 +1,10 @@
 import csv
 import sys
-import filtrar, ordenar, mostrar
+from scripts import filtrar, ordenar, mostrar, cargar, organizar
+
+import configparser
+configuracion = configparser.ConfigParser()
+configuracion.read('configuracion.ini', encoding='utf-8-sig')
 
 CONTINENTES = ["África", "Asia", "Europa", "América", "Oceanía"]
 
@@ -110,4 +114,12 @@ def cargar_contenido():
     pass
 
 if (__name__ == "__main__"):
-    main()
+    rutas_csv = organizar.organizar_archivos(configuracion)
+    # Mostrar resultados
+    print("\n" + "="*60)
+    print("RUTAS DE ARCHIVOS CSV ORGANIZADOS:")
+    print("="*60)
+    for nombre, ruta in sorted(rutas_csv.items()):
+        print(f"  {nombre:20} -> {ruta}")
+    cargar.extraer(configuracion)
+    #main()
