@@ -72,13 +72,14 @@ def organizar_archivos(configuracion):
     # Diccionario para almacenar las rutas finales
     rutas_organizadas = {}
     
-    path_paises_sin_cargar = configuracion["Paises"]["Paises_Sin_Cargar"]
+    path_paises_sin_extraer = configuracion["Paises"]["Paises_Sin_Extraer"]
     path_paises_cargados = configuracion["Paises"]["Paises_Cargados"]
     path_africa = configuracion["Continentes"]["Africa"]
     path_asia = configuracion["Continentes"]["Asia"]
     path_europa = configuracion["Continentes"]["Europa"]
     path_america = configuracion["Continentes"]["America"]
     path_oceania = configuracion["Continentes"]["Oceania"]
+    path_temporal = configuracion["Paises"]["Temporal"]
 
     # Ubicaciones esperadas
     ubicaciones_esperadas = {
@@ -87,8 +88,9 @@ def organizar_archivos(configuracion):
         'europa.csv': os.path.join(directorio_base, path_europa),
         'américa.csv': os.path.join(directorio_base, path_america),
         'oceanía.csv': os.path.join(directorio_base, path_oceania),
-        'paises_sin_cargar.csv': os.path.join(directorio_base, path_paises_sin_cargar),
-        'paises_cargados.csv': os.path.join(directorio_base, path_paises_cargados)
+        'paises_sin_extraer.csv': os.path.join(directorio_base, path_paises_sin_extraer),
+        'paises_cargados.csv': os.path.join(directorio_base, path_paises_cargados),
+        'temporal.csv': os.path.join(directorio_base, path_temporal)
     }
     
     # Buscar todos los archivos CSV recursivamente

@@ -12,10 +12,6 @@ HEADER = ["nombre", "población", "superficie", "continente", "onu"]
 
 contenido = None
 
-#agregar archivo de config con todos los paths relativos a la carpeta donde se encuentran
-#agregar recursividad para encontrar todos los archivos
-#agregar validaciones para campos
-
 def main():
     while True:
         print("\n--- Menú Principal ---\n"
@@ -104,8 +100,11 @@ def ingresar_opcion(texto:str = "\nIngresar opción: ",
     finally:
         return opcion
 
-def get_atributo(linea:str, indice:int):
-    return linea.strip().split(",")[indice]
+def get_atributo(linea:str|list, indice:int):
+    if (isinstance(linea, list)):
+        return linea[indice]
+    elif (isinstance(linea, str)):
+        return linea.strip().split(",")[indice]
 
 def print_vacio(recorte:int):
     print(" " * (40-recorte), end="")
@@ -115,11 +114,12 @@ def cargar_contenido():
 
 if (__name__ == "__main__"):
     rutas_csv = organizar.organizar_archivos(configuracion)
-    # Mostrar resultados
+    #Mostrar resultados
     print("\n" + "="*60)
     print("RUTAS DE ARCHIVOS CSV ORGANIZADOS:")
     print("="*60)
     for nombre, ruta in sorted(rutas_csv.items()):
         print(f"  {nombre:20} -> {ruta}")
     cargar.extraer(configuracion)
+    #cargar.cargar_continente(configuracion)
     #main()
