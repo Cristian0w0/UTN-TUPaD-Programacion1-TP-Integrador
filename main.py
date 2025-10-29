@@ -46,7 +46,7 @@ def menu_filtrar():
             case 0:
                 break
             case 1:
-                filtrar.filtrar_continente(CONTINENTES)
+                filtrar.filtrar_continente()
             case 2:
                 filtrar.filtrar_poblacion_o_superficie("Población", 1)
             case 3:

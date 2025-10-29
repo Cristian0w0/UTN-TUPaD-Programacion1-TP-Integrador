@@ -1,6 +1,6 @@
 import main, csv, sys
 
-def filtrar_continente(CONTINENTES):
+def filtrar_continente():
     while True:
         print("\n--- Filtrar por Continente ---\n"
         "1. África\n"
