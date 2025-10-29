@@ -1,4 +1,4 @@
-import main
+import main, csv, sys
 
 def filtrar_continente(CONTINENTES):
     while True:
@@ -9,44 +9,75 @@ def filtrar_continente(CONTINENTES):
         "4. América\n"
         "5. Oceanía\n"
         "0. Volver al menú filtrar")
+
         opcion = main.ingresar_opcion(rango_max=5)
-        with open("./paises.csv", "r", encoding="utf-8-sig") as archivo:
-            if (opcion == None):
-                continue
-            elif (1 <= opcion <= 5):
-                continente = CONTINENTES[opcion-1]
-                print(f"\n--- Paises de {continente} ---")
-                for linea in archivo:
-                    if (main.get_atributo(linea, 3) == continente):
-                        pais = main.get_atributo(linea, 0)
-                        print(pais)
-            elif (opcion == 0):
+
+        continente_nombre = None
+
+        match opcion:
+            case 1|2|3|4|5:
+                continente_nombre = ["África", "Asia", "Europa", "América", "Oceanía"][opcion - 1]
+            case 0:
                 break
+            case _:
+                continue
+
+        path_cargados = main.configuracion["Paises"]["Paises_Cargados"]
+        codificacion = main.configuracion["Configuracion"]["codificacion"]
+        contador = 0
+        with open(path_cargados, "r", encoding=codificacion) as cargados_archivo:
+            lector_cargados = csv.reader(cargados_archivo)
+            print(f"\n--- Paises de {continente_nombre} ---")
+            print(next(lector_cargados))  # Saltar encabezado
+            for pais in lector_cargados:
+                pais_continente = main.get_atributo(pais, 3)
+                if pais_continente == continente_nombre:
+                    print(pais)
+                    contador += 1
+        if contador == 0:
+            print(f"- No se encontraron países en {continente_nombre}")
 
 def filtrar_poblacion_o_superficie(opcion:str, indice:int):
     while True:
+
         min = main.ingresar_opcion(f"\nIngresar mínimo de {opcion} (al menos 1, o 0 " \
-        "para volver al Menú Filtrar): ")
-        if (min == 0):
+        "para volver al menú filtrar): ")
+
+        if min == 0:
             return
-        elif (min != -1):
+        elif min != None:
             break
+
     while True:
         max = main.ingresar_opcion(f"\nIngresar máximo de {opcion} (mayor o igual " \
-        "al mínimo, 0 para volver al Menú Filtrar, -1 para máximo Infinito): ")
+        "al mínimo, o 0 para volver al menú filtrar, -1 para máximo Infinito): ", rango_min=-1)
+
+        if max == -1:
+            max = sys.maxsize
+        elif max == None:
+            continue
+
         if (1 <= max < min):
             print("El máximo debe ser mayor o igual al mínimo " \
             f"(mínimo actual: {min})")
+
         elif (max >= min):
-            with open("paises.csv", "r", encoding="utf-8-sig") as archivo:
+
+            path_cargados = main.configuracion["Paises"]["Paises_Cargados"]
+            codificacion = main.configuracion["Configuracion"]["codificacion"]
+            contador = 0
+
+            with open(path_cargados, "r", encoding=codificacion) as cargados_archivo:
                 print(f"\n--- Paises con {opcion} entre {min} y {max} ---")
-                for linea in archivo:
-                    atributo = int(main.get_atributo(linea, indice))
+                lector_cargados = csv.reader(cargados_archivo)
+                print(next(lector_cargados))
+                for pais in lector_cargados:
+                    atributo = int(main.get_atributo(pais, indice))
                     if (min <= atributo <= max):
-                        pais = main.get_atributo(linea, 0)
-                        print(f"{pais}", end="")
-                        main.print_vacio(len(pais))
-                        print(f"{atributo}")
+                        print(pais)
+                        contador += 1
+            if (contador == 0):
+                print(f"- No se encontraron países con {opcion} entre {min} y {max}")
             break
         elif (max == 0):
             break

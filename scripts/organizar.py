@@ -1,41 +1,28 @@
-import os
+import main, os
 
 def mover_archivo(ruta_origen, ruta_destino):
-    """
-    Función para mover un archivo.
-    
-    Args:
-        ruta_origen (str): Ruta del archivo a mover
-        ruta_destino (str): Ruta destino del archivo
-    """
+    #Función para mover un archivo.
+
     try:
         # Leer el contenido del archivo origen
-        with open(ruta_origen, 'rb') as archivo_origen:
+        with open(ruta_origen, "rb") as archivo_origen:
             contenido = archivo_origen.read()
         
         # Escribir el contenido en el archivo destino
-        with open(ruta_destino, 'wb') as archivo_destino:
+        with open(ruta_destino, "wb") as archivo_destino:
             archivo_destino.write(contenido)
         
         # Eliminar el archivo origen
         os.remove(ruta_origen)
         
-        print(f"✓ Archivo movido: {ruta_origen} -> {ruta_destino}")
+        print(f"Archivo movido: {ruta_origen} -> {ruta_destino}")
         
     except Exception as e:
-        print(f"✗ Error al mover archivo {ruta_origen}: {e}")
+        print(f"Error al mover archivo {ruta_origen}: {e}")
 
 def buscar_archivo(directorio, archivos_encontrados=None):
-    """
-    Función para buscar archivos CSV recursivamente.
-    
-    Args:
-        directorio (str): Directorio donde buscar
-        archivos_encontrados (dict): Diccionario para almacenar archivos encontrados
-    
-    Returns:
-        dict: Diccionario con archivos encontrados
-    """
+    #Función para buscar archivos CSV recursivamente.
+
     if archivos_encontrados is None:
         archivos_encontrados = {}
     
@@ -46,7 +33,7 @@ def buscar_archivo(directorio, archivos_encontrados=None):
             if os.path.isdir(ruta_completa):
                 # Llamada recursiva para directorios
                 buscar_archivo(ruta_completa, archivos_encontrados)
-            elif os.path.isfile(ruta_completa) and elemento.lower().endswith('.csv'):
+            elif os.path.isfile(ruta_completa) and elemento.lower().endswith(".csv"):
                 # Agregar archivo CSV al diccionario
                 archivos_encontrados[elemento.lower()] = ruta_completa
                 
@@ -56,16 +43,9 @@ def buscar_archivo(directorio, archivos_encontrados=None):
     return archivos_encontrados
 
 def organizar_archivos(configuracion):
-    """
-    Función para organizar todos los archivos CSV.
-    
-    Args:
-        directorio_base (str): Ruta base del proyecto
-    
-    Returns:
-        dict: Diccionario con las rutas organizadas
-    """
-    print("Iniciando organización de archivos CSV...")
+    # Función para organizar todos los archivos CSV.
+
+    print("\nIniciando organización de archivos CSV...")
     
     directorio_base = os.getcwd()
 
@@ -83,14 +63,14 @@ def organizar_archivos(configuracion):
 
     # Ubicaciones esperadas
     ubicaciones_esperadas = {
-        'áfrica.csv': os.path.join(directorio_base, path_africa),
-        'asia.csv': os.path.join(directorio_base, path_asia),
-        'europa.csv': os.path.join(directorio_base, path_europa),
-        'américa.csv': os.path.join(directorio_base, path_america),
-        'oceanía.csv': os.path.join(directorio_base, path_oceania),
-        'paises_sin_extraer.csv': os.path.join(directorio_base, path_paises_sin_extraer),
-        'paises_cargados.csv': os.path.join(directorio_base, path_paises_cargados),
-        'temporal.csv': os.path.join(directorio_base, path_temporal)
+        "áfrica.csv": os.path.join(directorio_base, path_africa),
+        "asia.csv": os.path.join(directorio_base, path_asia),
+        "europa.csv": os.path.join(directorio_base, path_europa),
+        "américa.csv": os.path.join(directorio_base, path_america),
+        "oceanía.csv": os.path.join(directorio_base, path_oceania),
+        "paises_sin_extraer.csv": os.path.join(directorio_base, path_paises_sin_extraer),
+        "paises_cargados.csv": os.path.join(directorio_base, path_paises_cargados),
+        "temporal.csv": os.path.join(directorio_base, path_temporal)
     }
     
     # Buscar todos los archivos CSV recursivamente
@@ -99,7 +79,7 @@ def organizar_archivos(configuracion):
     
     # Procesar cada archivo esperado
     for archivo_esperado, ruta_destino in ubicaciones_esperadas.items():
-        nombre_sin_extension = archivo_esperado.replace('.csv', '')
+        nombre_sin_extension = archivo_esperado.replace(".csv", "")
         
         # Verificar si el archivo fue encontrado
         if archivo_esperado in archivos_encontrados:
@@ -116,7 +96,7 @@ def organizar_archivos(configuracion):
                 mover_archivo(ruta_encontrada, ruta_destino)
             
             rutas_organizadas[nombre_sin_extension] = ruta_destino
-            print(f"✓ Procesado: {archivo_esperado}")
+            print(f"Procesado: {archivo_esperado}")
             
         else:
             # Crear archivo si no existe
@@ -125,12 +105,12 @@ def organizar_archivos(configuracion):
                 os.makedirs(directorio_destino)
             
             try:
-                with open(ruta_destino, 'w', encoding='utf-8') as f:
-                    f.write('')  # Archivo CSV vacío
+                with open(ruta_destino, "w", encoding="utf-8") as f:
+                    f.writelines(",".join(main.HEADER))  # Archivo CSV vacío
                 rutas_organizadas[nombre_sin_extension] = ruta_destino
-                print(f"✓ Creado: {ruta_destino}")
+                print(f"Creado: {ruta_destino}")
             except Exception as e:
-                print(f"✗ Error al crear {ruta_destino}: {e}")
+                print(f"Error al crear {ruta_destino}: {e}")
     
-    print("✅ Organización completada!")
+    print("Organización completada!")
     return rutas_organizadas
