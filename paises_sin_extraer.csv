@@ -1,4 +1,4 @@
-nombre,población,superficie,continente,onu
+﻿nombre,población,superficie,continente,onu
 Afganistán,38928346,652230,Asia,true
 Albania,2877797,28748,Europa,true
 Alemania,83149300,357022,Europa,true
@@ -216,6 +216,7 @@ Guam,168775,549,Oceanía,false
 Samoa Americana,55191,199,Oceanía,false
 Islas Marianas del Norte,57559,464,Oceanía,false
 P41s 1nvent4d0,11111,222,América,false
+P@!$ |nvent@d°,11111,222,América,false
 ,11111,222,América,false
 País Inventado A,0,222,América,false
 País Inventado B,,222,América,false

@@ -327,31 +327,31 @@ def limpiar_y_extraer(configuracion):
         cabecera = next(contenido_sin_extraer)
     
     # Inicializar archivos de continentes con cabecera si están vacíos o no existen
-    for continente, ruta in continentes_dict.items():
-        paises_existentes[continente] = set()
+    for continente_nombre, path_continente in continentes_dict.items():
+        paises_existentes[continente_nombre] = set()
         try:
             # Verificar si el archivo existe y tiene contenido
-            with open(ruta, "r", encoding=codificacion, newline="") as archivo:
-                lector = csv.reader(archivo)
-                primera_linea = next(lector, None)
+            with open(path_continente, "r", encoding=codificacion, newline="") as continente_archivo:
+                lector_continente = csv.reader(continente_archivo)
+                primera_linea = next(lector_continente, None)
                 if primera_linea:
                     # El archivo ya tiene cabecera, leer países existentes
-                    for fila in lector:
-                        if fila and len(fila) > 0:
-                            nombre_pais = fila[0].strip().capitalize()
-                            paises_existentes[continente].add(nombre_pais)
+                    for pais in lector_continente:
+                        if pais and len(pais) > 0:
+                            pais_nombre = main.get_atributo(pais, 0)
+                            paises_existentes[continente].add(pais_nombre)
                 else:
                     # Archivo existe pero está vacío, escribir cabecera
-                    with open(ruta, "w", encoding=codificacion, newline="") as archivo:
-                        archivo.write(",".join(cabecera))
+                    with open(path_continente, "w", encoding=codificacion, newline="") as continente_archivo:
+                        continente_archivo.write(",".join(cabecera))
         except FileNotFoundError:
             # El archivo no existe, crearlo con cabecera
-            with open(ruta, "w", encoding=codificacion, newline="") as archivo:
-                archivo.write(",".join(cabecera))
+            with open(path_continente, "w", encoding=codificacion, newline="") as continente_archivo:
+                continente_archivo.write(",".join(cabecera))
         except StopIteration:
             # Archivo existe pero está vacío, escribir cabecera
-            with open(ruta, "w", encoding=codificacion, newline="") as archivo:
-                archivo.write(",".join(cabecera))
+            with open(path_continente, "w", encoding=codificacion, newline="") as continente_archivo:
+                continente_archivo.write(",".join(cabecera))
 
     # Procesar países sin extraer
     with open(path_sin_extraer, "r", encoding=codificacion, newline="") as sin_extraer_archivo, \
@@ -402,11 +402,11 @@ def limpiar_y_extraer(configuracion):
             temporal_archivo.write("\n" + ",".join(pais))
 
     # Escribir países válidos en sus archivos de continente (modo append)
-    for continente, paises in paises_para_continentes.items():
+    for continente_nombre, paises in paises_para_continentes.items():
         if paises:  # Solo si hay países para este continente
-            with open(continentes_dict[continente], "a", encoding=codificacion, newline="") as archivo:
+            with open(continentes_dict[continente_nombre], "a", encoding=codificacion, newline="") as continente_archivo:
                 for pais in paises:
-                    archivo.write("\n" + ",".join(pais))
+                    continente_archivo.write("\n" + ",".join(pais))
 
     # Reemplazar paises_sin_extraer con temporal y limpiar temporal
     with open(path_sin_extraer, "w", encoding=codificacion, newline="") as sin_extraer_archivo, \
@@ -422,8 +422,8 @@ def limpiar_y_extraer(configuracion):
         temporal_archivo.write(",".join(cabecera))
 
     print(f"\n Proceso completado:")
-    for continente, paises in paises_para_continentes.items():
-        print(f"\t- {continente}: {len(paises)} países")
+    for continente_nombre, paises in paises_para_continentes.items():
+        print(f"\t- {continente_nombre}: {len(paises)} países")
     print(f"\t- Países inválidos: {len(paises_para_temporal)}")
 
 
@@ -450,8 +450,8 @@ def validar_pais(campos_pais: list, paises_existentes: dict):
     if pais_nombre in paises_existentes[pais_continente]:
         return f"País '{pais_nombre}' ya existe en {pais_continente}"
     
-    if any(letra.isdigit() for letra in pais_nombre):
-        return "Nombre con números"
+    if any(not (letra.isalpha() or letra.isspace()) for letra in pais_nombre):
+        return "Nombre con números o caracteres especiales"
     
     if not pais_poblacion.lstrip("-").isdigit():
         return "Población no es número entero"
