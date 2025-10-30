@@ -339,7 +339,7 @@ def limpiar_y_extraer(configuracion):
                     for pais in lector_continente:
                         if pais and len(pais) > 0:
                             pais_nombre = main.get_atributo(pais, 0)
-                            paises_existentes[continente].add(pais_nombre)
+                            paises_existentes[continente_nombre].add(pais_nombre)
                 else:
                     # Archivo existe pero está vacío, escribir cabecera
                     with open(path_continente, "w", encoding=codificacion, newline="") as continente_archivo:
