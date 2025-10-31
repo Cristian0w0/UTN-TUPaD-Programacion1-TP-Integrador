@@ -1,5 +1,3 @@
-#AGREGAR VALIDACION PARA PAISES CON MENOR O MAYOR CANTIDAD DE CAMPOS
-
 import main
 import csv
 
@@ -12,50 +10,37 @@ def cargar_pais(configuracion):
         if nombre_pais == "0":
             break
 
-        # Verificar si el país ya está cargado
         paises_ya_cargados = set()
         try:
             with open(path_cargados, "r", encoding=codificacion, newline="") as archivo:
                 lector = csv.reader(archivo)
-                next(lector, None)  # Saltar cabecera
+                next(lector, None)
                 for fila in lector:
                     if fila and len(fila) > 0:
                         nombre_pais_cargado = fila[0].strip().capitalize()
                         paises_ya_cargados.add(nombre_pais_cargado)
         except FileNotFoundError:
-            # Si el archivo no existe, empezar con conjunto vacío
             pass
 
         if nombre_pais.capitalize() in paises_ya_cargados:
             print(f"\nEl país {nombre_pais} ya está cargado.")
             continue
 
-        # Buscar el país en los archivos de continentes
         print(f"\nBuscando {nombre_pais} en continentes...")
         
-        path_africa = configuracion["Continentes"]["Africa"]
-        path_asia = configuracion["Continentes"]["Asia"]
-        path_europa = configuracion["Continentes"]["Europa"]
-        path_america = configuracion["Continentes"]["America"]
-        path_oceania = configuracion["Continentes"]["Oceania"]
-        
-        continentes_rutas = {
-            "África": path_africa,
-            "Asia": path_asia,
-            "Europa": path_europa,
-            "América": path_america,
-            "Oceanía": path_oceania
-        }
+        continentes_rutas = {}
+
+        for continente in main.CONTINENTES:
+            continentes_rutas[continente] = configuracion["Continentes"][main.remover_tildes(continente)]
 
         pais_encontrado = None
         continente_encontrado = None
 
-        # Buscar en todos los continentes
         for continente, ruta in continentes_rutas.items():
             try:
                 with open(ruta, "r", encoding=codificacion, newline="") as archivo:
                     lector = csv.reader(archivo)
-                    next(lector, None)  # Saltar cabecera
+                    next(lector, None)
                     
                     for fila in lector:
                         if fila and len(fila) > 0:
@@ -69,7 +54,6 @@ def cargar_pais(configuracion):
             except FileNotFoundError:
                 continue
 
-        # Cargar el país si se encontró
         if pais_encontrado:
             with open(path_cargados, "a", encoding=codificacion, newline="") as archivo:
                 archivo.write("\n" + ",".join(pais_encontrado))
@@ -83,9 +67,9 @@ def cargar_continente(configuracion):
     while True:
         print("\n--- Cargar paises por Continente ---\n"
         "1. Cargar África\n"
-        "2. Cargar Asia\n"
-        "3. Cargar Europa\n"
-        "4. Cargar América\n"
+        "2. Cargar América\n"
+        "3. Cargar Asia\n"
+        "4. Cargar Europa\n"
         "5. Cargar Oceanía\n"
         "0. Volver al menú cargar")
         opcion = main.ingresar_opcion(rango_max=5)
@@ -93,23 +77,25 @@ def cargar_continente(configuracion):
         match opcion:
             case 0:
                 break
-            case 1:
-                path_continente = configuracion["Continentes"]["Africa"]
-            case 2:
-                path_continente = configuracion["Continentes"]["Asia"]
-            case 3:
-                path_continente = configuracion["Continentes"]["Europa"]
-            case 4:
-                path_continente = configuracion["Continentes"]["America"]
-            case 5:
-                path_continente = configuracion["Continentes"]["Oceania"]
+            #case 1:
+                #path_continente = configuracion["Continentes"]["Africa"]
+            #case 2:
+                #path_continente = configuracion["Continentes"]["Asia"]
+            #case 3:
+                #path_continente = configuracion["Continentes"]["Europa"]
+            #case 4:
+                #path_continente = configuracion["Continentes"]["America"]
+            #case 5:
+                #path_continente = configuracion["Continentes"]["Oceania"]
+            case 1|2|3|4|5:
+                path_continente = configuracion["Continentes"][main.remover_tildes(main.CONTINENTES[opcion - 1])]
             case _:
                 continue
         
         path_paises_cargados = configuracion["Paises"]["Paises_Cargados"]
         codificacion = configuracion["Configuracion"]["codificacion"]
         nombre_continente = path_continente.split("\\")[-1].split(".")[0].capitalize()
-        print(f"\nCargando países de {nombre_continente}")
+        print(f"\nCargando países de {nombre_continente}...")
 
         # Cargar todos los países existentes en paises_cargados
         paises_ya_cargados = set()
@@ -132,36 +118,32 @@ def cargar_continente(configuracion):
             lector_paises_entrantes = csv.reader(continente_archivo)
             next(lector_paises_entrantes)  # Saltar la cabecera
 
-            paises_cargados_count = 0
-            paises_duplicados_count = 0
+            contador_cargados = 0
+            contador_dubplicados = 0
 
             for pais_entrante in lector_paises_entrantes:
                 if not pais_entrante:  # Saltar filas vacías
                     continue
-                    
+                
                 pais_entrante_nombre = main.get_atributo(pais_entrante, 0).capitalize()
                 
                 if pais_entrante_nombre in paises_ya_cargados:
-                    print(f"\n\tEl país {pais_entrante_nombre} ya está cargado, saltando...")
-                    paises_duplicados_count += 1
+                    print(f"El país {pais_entrante_nombre} ya está cargado, saltando...")
+                    contador_dubplicados += 1
                 else:
                     # Escribir el país
                     paises_archivo.write("\n" + ",".join(pais_entrante))
                     # Agregar al conjunto para evitar duplicados en esta ejecución
                     paises_ya_cargados.add(pais_entrante_nombre)
-                    print(f"\n\tPaís {pais_entrante_nombre} cargado correctamente.")
-                    paises_cargados_count += 1
+                    print(f"País {pais_entrante_nombre} cargado correctamente.")
+                    contador_cargados += 1
 
-            print(f"\nResumen de carga:")
-            print(f"\t- Países nuevos cargados: {paises_cargados_count}")
-            print(f"\t- Países duplicados omitidos: {paises_duplicados_count}")
+            print(f"\nPaíses nuevos cargados: {contador_cargados}")
+            print(f"Países duplicados omitidos: {contador_dubplicados}")
 
 
 
 def cargar_onu(configuracion, estado_onu):
-    
-    #Carga todos los países de todos los continentes segun su campo onu.
-    
     estado_texto = "reconocidos por la ONU" if estado_onu == "true" else "no reconocidos por la ONU"
 
     while True:
@@ -175,53 +157,38 @@ def cargar_onu(configuracion, estado_onu):
     codificacion = configuracion["Configuracion"]["codificacion"]
     path_cargados = configuracion["Paises"]["Paises_Cargados"]
     
-    print(f"\n--- Cargando países {estado_texto} ---")
+    print(f"\nCargando países {estado_texto}...")
 
-    # Cargar todos los países ya existentes en paises_cargados
     paises_ya_cargados = set()
     try:
         with open(path_cargados, "r", encoding=codificacion, newline="") as archivo:
             lector = csv.reader(archivo)
-            next(lector, None)  # Saltar cabecera
+            next(lector, None)
             for fila in lector:
                 if fila and len(fila) > 0:
                     nombre_pais = fila[0].strip().capitalize()
                     paises_ya_cargados.add(nombre_pais)
     except FileNotFoundError:
-        # Si el archivo no existe, empezar con conjunto vacío
         pass
 
-    # Buscar países en todos los continentes que coincidan con el estado ONU
-    path_africa = configuracion["Continentes"]["Africa"]
-    path_asia = configuracion["Continentes"]["Asia"]
-    path_europa = configuracion["Continentes"]["Europa"]
-    path_america = configuracion["Continentes"]["America"]
-    path_oceania = configuracion["Continentes"]["Oceania"]
-    
-    continentes_rutas = {
-        "África": path_africa,
-        "Asia": path_asia,
-        "Europa": path_europa,
-        "América": path_america,
-        "Oceanía": path_oceania
-    }
+    continentes_rutas = {}
+    for continente in main.CONTINENTES:
+        continentes_rutas[continente] = configuracion["Continentes"][main.remover_tildes(continente)]
 
     paises_para_cargar = []
     paises_encontrados_por_continente = {}
 
-    # Buscar en todos los continentes
     for continente, ruta in continentes_rutas.items():
         try:
             with open(ruta, "r", encoding=codificacion, newline="") as archivo:
                 lector = csv.reader(archivo)
-                next(lector, None)  # Saltar cabecera
+                next(lector, None)
                 
                 for fila in lector:
-                    if fila and len(fila) >= 5:  # Asegurar que tiene campo ONU
+                    if fila and len(fila) >= 5:
                         nombre_pais = fila[0].strip().capitalize()
                         pais_onu = fila[4].strip().lower() if len(fila) > 4 else ""
                         
-                        # Verificar si coincide con el estado ONU buscado y no está ya cargado
                         if pais_onu == estado_onu and nombre_pais not in paises_ya_cargados:
                             paises_para_cargar.append(fila)
                             if continente not in paises_encontrados_por_continente:
@@ -232,24 +199,20 @@ def cargar_onu(configuracion, estado_onu):
             print(f"\nArchivo de {continente} no encontrado, saltando...")
             continue
 
-    # Cargar los países encontrados
     if paises_para_cargar:
         with open(path_cargados, "a", encoding=codificacion, newline="") as archivo:
             for pais in paises_para_cargar:
                 archivo.write("\n" + ",".join(pais))
         
-        print(f"\nCarga completada:")
-        print(f"Total de países {estado_texto} cargados: {len(paises_para_cargar)}")
+        print(f"Países nuevos cargados: {len(paises_para_cargar)}")
         for continente, cantidad in paises_encontrados_por_continente.items():
-            print(f"\t- {continente}: {cantidad} países")
+            print(f"{continente}: {cantidad} países")
     else:
-        print(f"\nNo se encontraron países {estado_texto} nuevos para cargar.")
+        print(f"No se encontraron países {estado_texto} nuevos para cargar.")
 
 
 
 def limpiar_cargados(configuracion):
-    #Limpia el archivo paises_cargados.csv, dejando solo la cabecera
-
     while True:
         opcion = main.ingresar_opcion("\n¿Seguro que desea eliminar todos los países cargados? " \
                                     "(1: Sí, 0: No, volver al menú cargar): ", rango_max=1)
@@ -262,25 +225,21 @@ def limpiar_cargados(configuracion):
     codificacion = configuracion["Configuracion"]["codificacion"]
     
     try:
-        # Leer la cabecera del archivo actual
         with open(path_cargados, "r", encoding=codificacion, newline="") as archivo:
             lector = csv.reader(archivo)
             cabecera = next(lector, None)
         
-        # Si el archivo existe y tiene cabecera, limpiarlo conservando la cabecera
         if cabecera:
             with open(path_cargados, "w", encoding=codificacion, newline="") as archivo:
                 archivo.write(",".join(cabecera))
             print("\nSe limpiaron los paises cargados.")
         else:
-            # Si no tiene cabecera, crear el archivo con cabecera por defecto
             with open(path_cargados, "w", encoding=codificacion, newline="") as archivo:
                 cabecera_default = main.HEADER
                 archivo.write(",".join(cabecera_default))
             print("\nArchivo para paises cargados creado con cabecera por defecto.")
             
     except FileNotFoundError:
-        # Si el archivo no existe, crearlo con cabecera por defecto
         with open(path_cargados, "w", encoding=codificacion, newline="") as archivo:
             cabecera_default = main.HEADER
             archivo.write(",".join(cabecera_default))
@@ -297,82 +256,62 @@ def limpiar_y_extraer(configuracion):
         "Este proceso validará y extraerá los países del archivo de 'países sin extraer', limpiando todos los otros archivos de datos.")
         confirmar = main.ingresar_opcion("\n¿Seguro que desea continuar? (1: Sí, 0: No): ", rango_max=1)
         if confirmar == 1:
+            print("\nLimpiando archivos y extrayendo países...")
             break
         elif confirmar == 0:
             return
 
     path_sin_extraer = configuracion["Paises"]["Paises_Sin_Extraer"]
     path_cargados = configuracion["Paises"]["Paises_Cargados"]
-    path_africa = configuracion["Continentes"]["Africa"]
-    path_asia = configuracion["Continentes"]["Asia"]
-    path_europa = configuracion["Continentes"]["Europa"]
-    path_america = configuracion["Continentes"]["America"]
-    path_oceania = configuracion["Continentes"]["Oceania"]
-    path_temporal = configuracion["Paises"]["temporal"]
     codificacion = configuracion["Configuracion"]["codificacion"]
 
-    # Cargar países existentes en continentes para evitar duplicados
-    paises_existentes = {}
-    continentes_dict = {
-        "África": path_africa,
-        "Asia": path_asia,
-        "Europa": path_europa,
-        "América": path_america,
-        "Oceanía": path_oceania
-    }
+    continentes_rutas = {}
+    for continente in main.CONTINENTES:
+        continentes_rutas[continente] = configuracion["Continentes"][main.remover_tildes(continente)]
     
-    # Leer la cabecera del archivo sin_extraer para usarla en todos los archivos
+    paises_existentes = {}
+
     with open(path_sin_extraer, "r", encoding=codificacion, newline="") as sin_extraer_archivo:
         contenido_sin_extraer = csv.reader(sin_extraer_archivo)
         cabecera = next(contenido_sin_extraer)
     
-    # Inicializar archivos de continentes con cabecera si están vacíos o no existen
-    for continente_nombre, path_continente in continentes_dict.items():
+    for continente_nombre, path_continente in continentes_rutas.items():
         paises_existentes[continente_nombre] = set()
         try:
-            # Verificar si el archivo existe y tiene contenido
             with open(path_continente, "r", encoding=codificacion, newline="") as continente_archivo:
                 lector_continente = csv.reader(continente_archivo)
                 primera_linea = next(lector_continente, None)
                 if primera_linea:
-                    # El archivo ya tiene cabecera, leer países existentes
                     for pais in lector_continente:
                         if pais and len(pais) > 0:
                             pais_nombre = main.get_atributo(pais, 0)
                             paises_existentes[continente_nombre].add(pais_nombre)
                 else:
-                    # Archivo existe pero está vacío, escribir cabecera
                     with open(path_continente, "w", encoding=codificacion, newline="") as continente_archivo:
                         continente_archivo.write(",".join(cabecera))
         except FileNotFoundError:
-            # El archivo no existe, crearlo con cabecera
             with open(path_continente, "w", encoding=codificacion, newline="") as continente_archivo:
                 continente_archivo.write(",".join(cabecera))
         except StopIteration:
-            # Archivo existe pero está vacío, escribir cabecera
             with open(path_continente, "w", encoding=codificacion, newline="") as continente_archivo:
                 continente_archivo.write(",".join(cabecera))
 
-    # Procesar países sin extraer
     with open(path_sin_extraer, "r", encoding=codificacion, newline="") as sin_extraer_archivo, \
-        open(path_cargados, "w", encoding=codificacion, newline="") as cargados_archivo, \
-        open(path_temporal, "w", encoding=codificacion, newline="") as temporal_archivo:
+        open(path_cargados, "w", encoding=codificacion, newline="") as cargados_archivo:
         
         contenido_sin_extraer = csv.reader(sin_extraer_archivo)
-        cabecera = next(contenido_sin_extraer)  # Leer cabecera otra vez
+        cabecera = next(contenido_sin_extraer)
         indice_nombre = cabecera.index("nombre")
         indice_poblacion = cabecera.index("población")
         indice_superficie = cabecera.index("superficie")
         indice_continente = cabecera.index("continente")
         indice_onu = cabecera.index("onu")
 
-        # Escribir cabecera en paises cargados y temporal
         cargados_archivo.write(",".join(cabecera))
-        temporal_archivo.write(",".join(cabecera))
 
-        # Listas para almacenar países procesados
-        paises_para_continentes = {continente: [] for continente in continentes_dict.keys()}
-        paises_para_temporal = []
+        paises_para_continentes = {continente: [] for continente in continentes_rutas.keys()}
+        paises_invalidos = []
+        contador_cargados = 0
 
         for pais in contenido_sin_extraer:
             pais_nombre = pais[indice_nombre].capitalize()
@@ -383,55 +322,36 @@ def limpiar_y_extraer(configuracion):
 
             campos_pais = [pais_nombre, pais_poblacion, pais_superficie, pais_continente, pais_onu]
             
-            # Validar país
             valido_o_error = validar_pais(campos_pais, paises_existentes)
             if valido_o_error == True:
-                # País válido - agregar a continente
                 if pais_continente in paises_para_continentes:
                     paises_para_continentes[pais_continente].append(campos_pais)
-                    # Actualizar conjunto de existentes para evitar duplicados en esta ejecución
                     paises_existentes[pais_continente].add(pais_nombre)
-                    print(f"\n País {pais_nombre} validado correctamente, extrayendo a {pais_continente}...")
+                    print(f"País {pais_nombre} validado correctamente, extrayendo a {pais_continente}...")
+                    contador_cargados += 1
             elif isinstance(valido_o_error, str):
-                # País inválido - agregar a temporal
-                paises_para_temporal.append(campos_pais)
-                print(f"\n País {pais_nombre} inválido ({valido_o_error}), saltar país...")
+                paises_invalidos.append(campos_pais)
+                print(f"País {pais_nombre} inválido ({valido_o_error}), saltar país...")
 
-        # Escribir países inválidos en temporal
-        for pais in paises_para_temporal:
-            temporal_archivo.write("\n" + ",".join(pais))
-
-    # Escribir países válidos en sus archivos de continente (modo append)
     for continente_nombre, paises in paises_para_continentes.items():
-        if paises:  # Solo si hay países para este continente
-            with open(continentes_dict[continente_nombre], "a", encoding=codificacion, newline="") as continente_archivo:
+        if paises:
+            with open(continentes_rutas[continente_nombre], "a", encoding=codificacion, newline="") as continente_archivo:
                 for pais in paises:
                     continente_archivo.write("\n" + ",".join(pais))
 
-    # Reemplazar paises_sin_extraer con temporal y limpiar temporal
-    with open(path_sin_extraer, "w", encoding=codificacion, newline="") as sin_extraer_archivo, \
-        open(path_temporal, "r+", encoding=codificacion, newline="") as temporal_archivo:
-        
-        # Copiar todo el contenido del temporal al sin_extraer
-        contenido_temporal = temporal_archivo.read()
-        sin_extraer_archivo.write(contenido_temporal)
-        
-        # Limpiar temporal (dejar solo cabecera)
-        temporal_archivo.seek(0)
-        temporal_archivo.truncate(0)
-        temporal_archivo.write(",".join(cabecera))
+    with open(path_sin_extraer, "w", encoding=codificacion, newline="") as sin_extraer_archivo:
+        sin_extraer_archivo.write(",".join(cabecera))
+        for pais in paises_invalidos:
+            sin_extraer_archivo.write("\n" + ",".join(pais))
 
-    print(f"\n Proceso completado:")
+    print(f"\nPaíses válidos extraídos: {contador_cargados}")
     for continente_nombre, paises in paises_para_continentes.items():
-        print(f"\t- {continente_nombre}: {len(paises)} países")
-    print(f"\t- Países inválidos: {len(paises_para_temporal)}")
+        print(f"{continente_nombre}: {len(paises)} países extraidos")
+    print(f"Países inválidos: {len(paises_invalidos)}")
 
 
 
 def validar_pais(campos_pais: list, paises_existentes: dict):
-    #Función para validar un país segun sus campos
-    
-    # Validar cantidad de campos para evitar errores de índice
     if len(campos_pais) != 5:
         return f"Cantidad de campos incorrecta. Esperados: 5, Encontrados: {len(campos_pais)}"
     
@@ -450,8 +370,16 @@ def validar_pais(campos_pais: list, paises_existentes: dict):
     if pais_nombre in paises_existentes[pais_continente]:
         return f"País '{pais_nombre}' ya existe en {pais_continente}"
     
-    if any(not (letra.isalpha() or letra.isspace()) for letra in pais_nombre):
-        return "Nombre con números o caracteres especiales"
+    if any(letra.isdigit() for letra in pais_nombre):
+        return "Nombre con números"
+    
+    for letra in pais_nombre:
+        if not (letra.isalpha() or 
+                letra.isspace() or 
+                letra == "-" or 
+                letra == "(" or 
+                letra == ")"):
+            return "Nombre con caracteres inválidos"
     
     if not pais_poblacion.lstrip("-").isdigit():
         return "Población no es número entero"

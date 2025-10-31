@@ -1,5 +1,4 @@
-import csv
-import sys
+import sys, unicodedata
 from scripts import filtrar, ordenar, mostrar, cargar, organizar
 
 import configparser
@@ -8,7 +7,7 @@ configuracion.read('configuracion.ini', encoding='utf-8-sig')
 
 HEADER = ["nombre", "población", "superficie", "continente", "onu"]
 
-
+CONTINENTES = ["África", "América", "Asia", "Europa", "Oceanía"]
 
 def main():
     while True:
@@ -75,14 +74,28 @@ def menu_ordenar():
 
 
 def menu_mostrar():
-    print("\n--- Menú Estadísticas ---\n"
-    "1. Mostrar país con mayor y menor Población\n"
-    "2. Mostrar promedio de Población\n"
-    "3. Mostrar promedio de Superficie\n"
-    "4. Mostrar cantidad de países por Continente\n"
-    "5. Mostrar países cargados\n"
-    "0. Volver al menú principal")
-    opcion = ingresar_opcion(rango_max=5)
+    while True:
+        print("\n--- Menú Estadísticas ---\n"
+        "1. Mostrar país(es) con mayor y menor Población\n"
+        "2. Mostrar promedio de Población\n"
+        "3. Mostrar promedio de Superficie\n"
+        "4. Mostrar cantidad de países por Continente\n"
+        "5. Mostrar países cargados\n"
+        "0. Volver al menú principal")
+        opcion = ingresar_opcion(rango_max=5)
+        match opcion:
+            case 0:
+                break
+            case 1:
+                mostrar.mayor_menor_poblacion()
+            case 2:
+                mostrar.promedio("Población", 1)
+            case 3:
+                mostrar.promedio("Superficie en km^2", 2)
+            case 4:
+                mostrar.paises_por_continente()
+            case 5:
+                mostrar.mostrar_cargados()
 
 
 
@@ -112,8 +125,6 @@ def menu_cargar():
                 cargar.limpiar_cargados(configuracion)
             case 6:
                 cargar.limpiar_y_extraer(configuracion)
-            case _:
-                continue
 
 
 
@@ -131,17 +142,22 @@ def ingresar_opcion(texto:str = "\nIngresar opción: ",
 
 
 
-def get_atributo(linea:str|list, indice:int):
-    if (isinstance(linea, list)):
-        return linea[indice]
-    elif (isinstance(linea, str)):
-        return linea.strip().split(",")[indice]
+def get_atributo(pais:str|list, indice:int):
+    if (isinstance(pais, list)):
+        return pais[indice]
+    elif (isinstance(pais, str)):
+        return pais.strip().split(",")[indice]
 
+
+def remover_tildes(continente:str):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', continente)
+        if unicodedata.category(c) != 'Mn'
+    )
 
 
 if (__name__ == "__main__"):
     rutas_csv = organizar.organizar_archivos(configuracion)
-    #Mostrar resultados
     print("\n" + "="*60)
     print("RUTAS DE ARCHIVOS CSV ORGANIZADOS:")
     print("="*60)

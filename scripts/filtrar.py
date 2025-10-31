@@ -4,9 +4,9 @@ def filtrar_continente():
     while True:
         print("\n--- Filtrar por Continente ---\n"
         "1. África\n"
-        "2. Asia\n"
-        "3. Europa\n"
-        "4. América\n"
+        "2. América\n"
+        "3. Asia\n"
+        "4. Europa\n"
         "5. Oceanía\n"
         "0. Volver al menú filtrar")
 
@@ -16,7 +16,7 @@ def filtrar_continente():
 
         match opcion:
             case 1|2|3|4|5:
-                continente_nombre = ["África", "Asia", "Europa", "América", "Oceanía"][opcion - 1]
+                continente_nombre = main.CONTINENTES[opcion - 1]
             case 0:
                 break
             case _:
