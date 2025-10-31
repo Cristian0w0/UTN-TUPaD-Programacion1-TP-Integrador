@@ -46,12 +46,6 @@ def organizar_archivos(configuracion):
     
     path_paises_sin_extraer = configuracion["Paises"]["Paises_Sin_Extraer"]
     path_paises_cargados = configuracion["Paises"]["Paises_Cargados"]
-    '''path_africa = configuracion["Continentes"]["Africa"]
-    path_america = configuracion["Continentes"]["America"]
-    path_asia = configuracion["Continentes"]["Asia"]
-    path_europa = configuracion["Continentes"]["Europa"]
-    path_oceania = configuracion["Continentes"]["Oceania"]
-    path_temporal = configuracion["Paises"]["Temporal"]'''
     codificacion = configuracion["Configuracion"]["codificacion"]
     formato = configuracion["Configuracion"]["formato_archivos"]
 

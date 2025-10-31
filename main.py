@@ -1,7 +1,6 @@
-import sys, unicodedata
+import sys, configparser, unicodedata
 from scripts import filtrar, ordenar, mostrar, cargar, organizar
 
-import configparser
 configuracion = configparser.ConfigParser()
 configuracion.read('configuracion.ini', encoding='utf-8-sig')
 
@@ -106,10 +105,11 @@ def menu_cargar():
         "2. Cargar países de continente\n"
         "3. Cargar países reconocidos por la ONU\n"
         "4. Cargar países no reconocidos por la ONU\n"
-        "5. Limpiar países cargados\n"
-        "6. Limpiar todo y Extraer\n"
+        "5. Introducir pais manualmente a continente\n"
+        "6. Limpiar países cargados\n"
+        "7. Limpiar todo y Extraer\n"
         "0. Volver al menú principal")
-        opcion = ingresar_opcion(rango_max=6)
+        opcion = ingresar_opcion(rango_max=7)
         match opcion:
             case 0:
                 break
@@ -122,8 +122,10 @@ def menu_cargar():
             case 4:
                 cargar.cargar_onu(configuracion, "false")
             case 5:
-                cargar.limpiar_cargados(configuracion)
+                cargar.introducir_pais(configuracion)
             case 6:
+                cargar.limpiar_cargados(configuracion)
+            case 7:
                 cargar.limpiar_y_extraer(configuracion)
 
 
