@@ -1,6 +1,7 @@
 import main, csv, sys
 
 def filtrar_continente():
+    # Menú para filtrar países por continente
     while True:
         print("\n--- Filtrar por Continente ---\n"
         "1. África\n"
@@ -22,6 +23,7 @@ def filtrar_continente():
             case _:
                 continue
 
+        # Procesar y mostrar países del continente seleccionado
         path_cargados = main.configuracion["Paises"]["Paises_Cargados"]
         codificacion = main.configuracion["Configuracion"]["codificacion"]
         contador = 0
@@ -38,8 +40,8 @@ def filtrar_continente():
             print(f"- No se encontraron países en {continente_nombre}")
 
 def filtrar_poblacion_o_superficie(opcion:str, indice:int):
+    # Filtrar por rango de población o superficie
     while True:
-
         min = main.ingresar_opcion(f"\nIngresar mínimo de {opcion} (al menos 1, o 0 " \
         "para volver al menú filtrar): ")
 
@@ -57,12 +59,13 @@ def filtrar_poblacion_o_superficie(opcion:str, indice:int):
         elif max == None:
             continue
 
+        # Validar que el rango sea correcto
         if (1 <= max < min):
             print("El máximo debe ser mayor o igual al mínimo " \
             f"(mínimo actual: {min})")
 
         elif (max >= min):
-
+            # Filtrar y mostrar países dentro del rango especificado
             path_cargados = main.configuracion["Paises"]["Paises_Cargados"]
             codificacion = main.configuracion["Configuracion"]["codificacion"]
             contador = 0

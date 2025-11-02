@@ -1,14 +1,16 @@
 import sys, configparser, unicodedata
 from scripts import filtrar, ordenar, mostrar, cargar, organizar
 
+# Configuración inicial del programa
 configuracion = configparser.ConfigParser()
 configuracion.read('configuracion.ini', encoding='utf-8-sig')
 
+# Definición de constantes
 HEADER = ["nombre", "población", "superficie", "continente", "onu"]
-
 CONTINENTES = ["África", "América", "Asia", "Europa", "Oceanía"]
 
 def main():
+    # Menú principal del programa
     while True:
         print("\n--- Menú Principal ---\n"
         "1. Filtrar países\n"
@@ -33,6 +35,7 @@ def main():
 
 
 def menu_filtrar():
+    # Menú de filtrado de países
     while True:
         print("\n--- Menú Filtrar ---\n"
         "1. Filtrar países por Continente\n"
@@ -53,6 +56,7 @@ def menu_filtrar():
 
 
 def menu_ordenar():
+    # Menú de ordenamiento de países
     while True:
         print("\n--- Menú Ordenar ---\n"
         "1. Ordenar países por Nombre\n"
@@ -73,6 +77,7 @@ def menu_ordenar():
 
 
 def menu_mostrar():
+    # Menú de estadísticas y visualización
     while True:
         print("\n--- Menú Estadísticas ---\n"
         "1. Mostrar país(es) con mayor y menor Población\n"
@@ -99,6 +104,7 @@ def menu_mostrar():
 
 
 def menu_cargar():
+    # Menú de carga y gestión de datos
     while True:
         print("\n--- Menú Cargar ---\n"
         "1. Cargar país por nombre\n"
@@ -132,6 +138,7 @@ def menu_cargar():
 
 def ingresar_opcion(texto:str = "\nIngresar opción: ", 
                     rango_max:int = sys.maxsize, rango_min:int = 0):
+    # Función para validar entrada de opciones del usuario
     try:
         opcion = int(input(texto))
         if (not rango_min <= opcion <= rango_max):
@@ -145,6 +152,7 @@ def ingresar_opcion(texto:str = "\nIngresar opción: ",
 
 
 def get_atributo(pais:str|list, indice:int):
+    # Función auxiliar para obtener atributos de un país
     if (isinstance(pais, list)):
         return pais[indice]
     elif (isinstance(pais, str)):
@@ -152,6 +160,7 @@ def get_atributo(pais:str|list, indice:int):
 
 
 def remover_tildes(continente:str):
+    # Función para normalizar texto removiendo tildes
     return ''.join(
         c for c in unicodedata.normalize('NFD', continente)
         if unicodedata.category(c) != 'Mn'
@@ -159,6 +168,7 @@ def remover_tildes(continente:str):
 
 
 if (__name__ == "__main__"):
+    # Inicialización del programa - organización de archivos CSV
     rutas_csv = organizar.organizar_archivos(configuracion)
     print("\n" + "="*60)
     print("RUTAS DE ARCHIVOS CSV ORGANIZADOS:")
